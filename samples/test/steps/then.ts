@@ -2,6 +2,7 @@
 import { Then } from '@cucumber/cucumber';
 
 import checkProfile from '../support/check/checkProfile';
+import checkGuest from '../support/check/checkGuest';
 
 Then(
   /^User can verify their profile data$/,
@@ -11,6 +12,11 @@ Then(
 Then(
   /^a page loads with all of Mary's Profile information$/,
   checkProfile
+);
+
+Then(
+  /^the Root Page shows links to the Entry Points$/,
+  checkGuest
 );
 
 // import checkClass from '../support/check/checkClass';
