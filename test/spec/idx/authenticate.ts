@@ -14,8 +14,10 @@ import {
   IdxErrorAccessDeniedFactory,
   IdxErrorIncorrectPassword,
   IdxErrorUserNotAssignedFactory,
-  IdxErrorAuthenticationFailedFactory
+  IdxErrorAuthenticationFailedFactory,
+  RawIdxResponseFactory
 } from '@okta/test.support/idx';
+import { IdxMessagesFactory } from '@okta/test.support/idx/factories/messages';
 
 jest.mock('@okta/okta-idx-js', () => {
   const { makeIdxState } = jest.requireActual('@okta/okta-idx-js').default;
@@ -110,7 +112,13 @@ describe('idx/authenticate', () => {
 
     it('returns terminal error when invalid username is provided', async () => {
       const { authClient } = testContext;
-      const errorResponse = IdxErrorAccessDeniedFactory.build();
+      const errorResponse = RawIdxResponseFactory.params({
+        messages: IdxMessagesFactory.build({
+          value: [
+            IdxErrorAccessDeniedFactory.build()
+          ]
+        })
+      });
       const identifyResponse =  IdentifyResponseFactory.build();
       identifyResponse.proceed = jest.fn().mockRejectedValue(errorResponse);
       jest.spyOn(mocked.idx, 'start').mockResolvedValue(identifyResponse);
@@ -130,7 +138,14 @@ describe('idx/authenticate', () => {
 
     it('returns terminal error when invalid password is provided', async () => {
       const { authClient } = testContext;
-      const errorResponse = IdxErrorIncorrectPassword.build();
+      const errorResponse = RawIdxResponseFactory.params({
+        messages: IdxMessagesFactory.build({
+          value: [
+            IdxErrorIncorrectPassword.build()
+          ]
+        })
+      });
+
       const identifyResponse =  IdentifyResponseFactory.build();
       identifyResponse.proceed = jest.fn().mockRejectedValue(errorResponse);
       jest.spyOn(mocked.idx, 'start').mockResolvedValue(identifyResponse);
@@ -150,7 +165,13 @@ describe('idx/authenticate', () => {
 
     it('returns terminal error when user account is deactivated or is not assigned to the application', async () => {
       const { authClient } = testContext;
-      const errorResponse = IdxErrorUserNotAssignedFactory.build();
+      const errorResponse = RawIdxResponseFactory.params({
+        messages: IdxMessagesFactory.build({
+          value: [
+            IdxErrorUserNotAssignedFactory.build()
+          ]
+        })
+      });
       const identifyResponse =  IdentifyResponseFactory.build();
       identifyResponse.proceed = jest.fn().mockRejectedValue(errorResponse);
       jest.spyOn(mocked.idx, 'start').mockResolvedValue(identifyResponse);
@@ -170,7 +191,13 @@ describe('idx/authenticate', () => {
 
     it('returns terminal error when user account is locked or suspeneded', async () => {
       const { authClient } = testContext;
-      const errorResponse = IdxErrorAuthenticationFailedFactory.build();
+      const errorResponse = RawIdxResponseFactory.params({
+        messages: IdxMessagesFactory.build({
+          value: [
+            IdxErrorAuthenticationFailedFactory.build()
+          ]
+        })
+      });
       const identifyResponse =  IdentifyResponseFactory.build();
       identifyResponse.proceed = jest.fn().mockRejectedValue(errorResponse);
       jest.spyOn(mocked.idx, 'start').mockResolvedValue(identifyResponse);

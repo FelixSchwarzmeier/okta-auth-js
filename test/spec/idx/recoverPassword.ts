@@ -12,7 +12,9 @@ import {
   ReEnrollPasswordAuthenticatorRemediationFactory,
   AuthenticatorVerificationDataRemediationFactory,
   SelectAuthenticatorRemediationFactory,
-  IdxErrorResetPasswordNotAllowedFactory
+  IdxErrorResetPasswordNotAllowedFactory,
+  RawIdxResponseFactory,
+  IdxMessagesFactory
 } from '@okta/test.support/idx';
 
 jest.mock('@okta/okta-idx-js', () => {
@@ -155,7 +157,13 @@ describe('idx/recoverPassword', () => {
       identifyRecoveryResponse,
     } = testContext;
     
-    const idxError = IdxErrorResetPasswordNotAllowedFactory.build();
+    const idxError = RawIdxResponseFactory.params({
+      messages: IdxMessagesFactory.build({
+        value: [
+          IdxErrorResetPasswordNotAllowedFactory.build()
+        ]
+      })
+    });
     jest.spyOn(identifyRecoveryResponse, 'proceed').mockRejectedValue(idxError);
     jest.spyOn(mocked.idx, 'start')
       .mockResolvedValueOnce(identifyResponse);
